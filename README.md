@@ -27,3 +27,7 @@ replacedFs.restore();
 This will replace the global `fs/promises` module with the mocked version. Since `inreplace` works by mutating the object, this will take effect across the entire runtime and not just the file it was called in.
 
 It is worth noting that `inreplace` replaces the entire object, meaning any functions you do not include in your mocked version will be undefined.
+
+### Options
+You may pass an options object to the `inreplace` functions. The currently available options are:
+* `allowNonConfigurable` - By default the `inreplace` function will throw when encountering a non-configurable property in the target object. With this option set to true the function will instead leave those properties untouched.

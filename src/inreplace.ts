@@ -4,6 +4,10 @@ export type InreplaceHandle = {
 };
 
 export type InreplaceOptions = {
+	/**
+	 * By default the function will throw when encountering a non-configurable property in the target object.
+	 * With this option set to true the function will instead leave those properties untouched.
+	 */
 	allowNonConfigurable?: boolean;
 };
 

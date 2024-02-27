@@ -190,6 +190,21 @@ describe('The inreplace() function', () => {
 		expect(target.c).to.equal('c');
 	});
 
+	it('should retain non-configurable properties if option is passed', () => {
+		const target: Record<string, unknown> = {};
+		Object.defineProperty(target, 'a', {
+			configurable: false,
+			value: 'a'
+		});
+
+		const source = { b: 'b' };
+
+		inreplace(target, source, { allowNonConfigurable: true });
+
+		expect(target.a).to.equal('a');
+		expect(target.b).to.equal('b');
+	});
+
 	it('should throw if target object is not extensible', () => {
 		const target = {};
 		Object.preventExtensions(target);

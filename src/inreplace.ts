@@ -3,15 +3,21 @@ export type InreplaceHandle = {
 	restore: () => void;
 };
 
-export default function inreplace<T extends object>(target: T, source: object): InreplaceHandle {
+export type InreplaceOptions = {
+	allowNonConfigurable?: boolean;
+};
+
+export default function inreplace<T extends object>(target: T, source: object, options?: InreplaceOptions): InreplaceHandle {
 	if (!Object.isExtensible(target) || Object.isSealed(target) || Object.isFrozen(target)) {
 		throw new Error('Target object must allow extensions and must not be sealed or frozen!');
 	}
 
+	const allowNonConfigurable = options?.allowNonConfigurable ?? false;
+
 	for (const property of Object.getOwnPropertyNames(target)) {
 		const descriptor = Object.getOwnPropertyDescriptor(target, property)!;
 
-		if (descriptor.configurable === false) {
+		if (descriptor.configurable === false && allowNonConfigurable === false) {
 			throw new Error(`Unable to inreplace this object, the property '${property}' in the target object is not configurable!`);
 		}
 	}
@@ -24,12 +30,10 @@ export default function inreplace<T extends object>(target: T, source: object): 
 	for (const property of Object.getOwnPropertyNames(target)) {
 		const descriptor = Object.getOwnPropertyDescriptor(target, property)!;
 
-		Object.defineProperty(clone, property, {
-			...descriptor,
-			configurable: false
-		});
-
-		Reflect.deleteProperty(target, property);
+		if (descriptor.configurable) {
+			Object.defineProperty(clone, property, descriptor);
+			Reflect.deleteProperty(target, property);
+		}
 	}
 
 	Object.setPrototypeOf(clone, targetPrototype);
@@ -46,7 +50,7 @@ export default function inreplace<T extends object>(target: T, source: object): 
 
 	return {
 		restore: () => {
-			inreplace(target, clone);
+			inreplace(target, clone, options);
 		}
 	};
 }

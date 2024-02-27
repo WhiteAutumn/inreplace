@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    // Target
+    "target": "ES2019",
+    "lib": ["ES2019"],
+    "module": "commonjs",
+
+    // Safety
+    "strict": true,
+
+    // Output
+    "declaration": true
+  },
+  "exclude": ["src/**/*.test.*", "node_modules", "dist"]
+}

@@ -1,0 +1,77 @@
+{
+  "name": "inreplace",
+  "version": "1.0.0",
+  "description": "In-place object replacement",
+  "author": "WhiteAutumn",
+  "license": "MIT",
+  "keywords": [
+    "mock",
+    "mocking",
+    "test",
+    "testing",
+    "global",
+    "replace",
+    "in-place"
+  ],
+  "volta": {
+    "node": "20.11.1",
+    "npm": "10.4.0"
+  },
+  "homepage": "https://github.com/WhiteAutumn/inreplace",
+  "bugs": {
+    "url": "https://github.com/WhiteAutumn/inreplace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WhiteAutumn/inreplace.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "main": "./dist/cjs/index.cjs.js",
+  "module": "./dist/mjs/index.esm.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/mjs/index.esm.d.ts",
+        "default": "./dist/mjs/index.esm.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.cjs.d.ts",
+        "default": "./dist/cjs/index.cjs.js"
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint . --color",
+    "lint:fix": "eslint . --fix --color",
+    "lint:strict": "eslint . --color --max-warnings=0",
+    "test": "mocha --colors .",
+    "test:watch": "mocha --watch --reporter min --colors .",
+    "type-check": "tsc --noEmit",
+    "build": "run-p build:*",
+    "build:require": "tsc --project tsconfig.cjs.json",
+    "build:modules": "tsc --project tsconfig.esm.json",
+    "postbuild": "node ./scripts/postbuild.mjs",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.0",
+    "@types/mocha": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "chai": "^4.0.0",
+    "esbuild-runner": "^2.0.0",
+    "eslint": "^8.0.0",
+    "mocha": "^10.0.0",
+    "npm-run-all": "^4.0.0",
+    "pre-commit": "^1.0.2",
+    "typescript": "~5.3.0"
+  },
+  "pre-commit": [
+    "lint",
+    "type-check",
+    "test"
+  ]
+}

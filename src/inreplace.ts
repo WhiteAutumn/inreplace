@@ -8,6 +8,14 @@ export default function inreplace<T extends object>(target: T, source: object): 
 		throw new Error('Target object must allow extensions and must not be sealed or frozen!');
 	}
 
+	for (const property of Object.getOwnPropertyNames(target)) {
+		const descriptor = Object.getOwnPropertyDescriptor(target, property)!;
+
+		if (descriptor.configurable === false) {
+			throw new Error(`Unable to inreplace this object, the property '${property}' in the target object is not configurable!`);
+		}
+	}
+
 	const clone = Object.create(null);
 
 	const targetPrototype = Object.getPrototypeOf(target);
@@ -15,10 +23,6 @@ export default function inreplace<T extends object>(target: T, source: object): 
 
 	for (const property of Object.getOwnPropertyNames(target)) {
 		const descriptor = Object.getOwnPropertyDescriptor(target, property)!;
-
-		if (descriptor.configurable === false) {
-			throw new Error(`Unable to inreplace this object, the property '${property}' in the target object is not configurable!`);
-		}
 
 		Object.defineProperty(clone, property, {
 			...descriptor,

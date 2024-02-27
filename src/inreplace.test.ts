@@ -166,6 +166,30 @@ describe('The inreplace() function', () => {
 		expect(() => inreplace(target, source)).to.throw('Unable to inreplace this object, the property \'a\' in the target object is not configurable!');
 	});
 
+	it('should not modify target object if any property is non-configurable', () => {
+		const target: Record<string, unknown> = {};
+		Object.defineProperty(target, 'a', {
+			configurable: true,
+			value: 'a'
+		});
+		Object.defineProperty(target, 'b', {
+			configurable: false,
+			value: 'b'
+		});
+		Object.defineProperty(target, 'c', {
+			configurable: true,
+			value: 'c'
+		});
+
+		const source = {};
+
+		expect(() => inreplace(target, source)).to.throw();
+
+		expect(target.a).to.equal('a');
+		expect(target.b).to.equal('b');
+		expect(target.c).to.equal('c');
+	});
+
 	it('should throw if target object is not extensible', () => {
 		const target = {};
 		Object.preventExtensions(target);

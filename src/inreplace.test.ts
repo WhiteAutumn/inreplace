@@ -60,6 +60,25 @@ describe('The inreplace() function', () => {
 		expect(target.a).to.equal('a');
 	});
 
+	it('should support symbols', () => {
+		const symbolA = Symbol();
+		const symbolB = Symbol();
+		const symbolC = Symbol();
+		const target = {
+			[symbolC]: 'c'
+		};
+		const source = {
+			[symbolA]: 'a',
+			[symbolB]: 'b'
+		};
+
+		inreplace(target, source);
+
+		expect(target[symbolA]).to.equal('a');
+		expect(target[symbolB]).to.equal('b');
+		expect(symbolC in target).to.be.false;
+	});
+
 	it('should support non-enumerable properties', () => {
 		const target: Record<string, unknown> = { a: 'a', b: 'b' };
 		const source = { c: 'c', d: 'd' };

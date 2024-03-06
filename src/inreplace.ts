@@ -18,11 +18,13 @@ export default function inreplace<T extends object>(target: T, source: object, o
 
 	const allowNonConfigurable = options?.allowNonConfigurable ?? false;
 
-	for (const property of Object.getOwnPropertyNames(target)) {
+	const allTargetProps = [...Object.getOwnPropertyNames(target), ...Object.getOwnPropertySymbols(target)];
+	
+	for (const property of allTargetProps) {
 		const descriptor = Object.getOwnPropertyDescriptor(target, property)!;
 
 		if (descriptor.configurable === false && allowNonConfigurable === false) {
-			throw new Error(`Unable to inreplace this object, the property '${property}' in the target object is not configurable!`);
+			throw new Error(`Unable to inreplace this object, the property '${typeof property === 'string' ? property : property.toString()}' in the target object is not configurable!`);
 		}
 	}
 
@@ -31,7 +33,7 @@ export default function inreplace<T extends object>(target: T, source: object, o
 	const targetPrototype = Object.getPrototypeOf(target);
 	Object.setPrototypeOf(target, null);
 
-	for (const property of Object.getOwnPropertyNames(target)) {
+	for (const property of allTargetProps) {
 		const descriptor = Object.getOwnPropertyDescriptor(target, property)!;
 
 		if (descriptor.configurable) {
@@ -42,7 +44,8 @@ export default function inreplace<T extends object>(target: T, source: object, o
 
 	Object.setPrototypeOf(clone, targetPrototype);
 
-	for (const property of Object.getOwnPropertyNames(source)) {
+	const allSourceProps = [...Object.getOwnPropertyNames(source), ...Object.getOwnPropertySymbols(source)];
+	for (const property of allSourceProps) {
 		const descriptor = Object.getOwnPropertyDescriptor(source, property)!;
 		Object.defineProperty(target, property, {
 			...descriptor,

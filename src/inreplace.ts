@@ -12,6 +12,10 @@ export type InreplaceOptions = {
 };
 
 export default function inreplace<T extends object>(target: T, source: object, options?: InreplaceOptions): InreplaceHandle {
+	if (target === source) {
+		throw new Error('Target and source must be different objects!');
+	}
+
 	if (!Object.isExtensible(target) || Object.isSealed(target) || Object.isFrozen(target)) {
 		throw new Error('Target object must allow extensions and must not be sealed or frozen!');
 	}
